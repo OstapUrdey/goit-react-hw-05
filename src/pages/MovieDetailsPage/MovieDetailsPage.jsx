@@ -1,6 +1,6 @@
 // import css from './MovieDetailsPage.module.css';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, Outlet, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -15,20 +15,17 @@ export default function MovieDetailsPage() {
     const API_KEY = "dfbdaa10e6641e35135522619deadcb1";
     const URL = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`;
 
-    const fetchMovieDetails = async () => {
-        try {
-            const response = await axios.get(URL);
-            setMovie(response.data);
-        } catch (error) {
-            setError('Failed to fetch movies details');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const fetchMovieDetails = useCallback(() => {
+        setLoading(true);
+        axios.get(URL)
+            .then(response => setMovie(response.data))
+            .catch(() => setError('Failed to fetch movie details'))
+            .finally(() => setLoading(false));
+    }, [URL]);    
 
     useEffect(() => {
         fetchMovieDetails();
-    }, [movieId]);
+    }, [fetchMovieDetails]);
 
     const handleGoBack = () => {
         navigate(-1);

@@ -14,18 +14,14 @@ export default function MoviesPage() {
 
     const API_KEY = "dfbdaa10e6641e35135522619deadcb1";
 
-    const fetchMovies = async (searchQuery) => {
+    const fetchMovies = (searchQuery) => {
         if (!searchQuery) return;
         setLoading(true);
-        try {
-            const response = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchQuery}`); 
-            setMovies(response.data.results);
-        } catch (error) {
-            setError('Failed to fetch movies');
-        } finally {
-            setLoading(false);
-        }
-    };
+        axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchQuery}`)
+            .then(response => setMovies(response.data.results))
+            .catch(() => setError('Failed to fetch movies'))
+            .finally(() => setLoading(false));
+    };    
 
     const handleInputChange = (event) => {
         setQuery(event.target.value);

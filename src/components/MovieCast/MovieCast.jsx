@@ -18,7 +18,7 @@ export default function MovieCast() {
             setCast(response.data.cast);
         };
         fetchCast();
-    }, [movieId]);
+    }, [movieId, URL]);
 
     return (
         <ul>

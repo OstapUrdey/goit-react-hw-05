@@ -14,15 +14,12 @@ export default function HomePage () {
     const API_KEY = "dfbdaa10e6641e35135522619deadcb1";
     const URL = `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`;
 
-    const fetchMovies = useCallback(async () => {
-        try {
-            const response = await axios.get(URL);
-            setMovies(response.data.results);
-        } catch (error) {
-            setError('Failed to fetch movies');
-        } finally {
-            setLoading(false);
-        }
+    const fetchMovies = useCallback(() => {
+        setLoading(true);
+        axios.get(URL)
+            .then(response => setMovies(response.data.results))
+            .catch(() => setError('Failed to fetch movies'))
+            .finally(() => setLoading(false));
     }, [URL]);
 
     useEffect(() => {

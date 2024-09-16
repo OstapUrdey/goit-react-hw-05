@@ -17,7 +17,7 @@ export default function MovieReviews() {
             setReviews(response.data.results);
         };
         fetchReviews();
-    }, [movieId]);
+    }, [movieId, URL]);
 
     return (
         <ul>
