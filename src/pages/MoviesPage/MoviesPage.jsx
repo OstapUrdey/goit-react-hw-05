@@ -1,16 +1,18 @@
 // import css from './MoviesPage.module.css';
 
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
-import MovieList from '../../components/MovieList/MovieList';
+import MovieList from '../../components/MovieList/MovieList.jsx';
 
 export default function MoviesPage() {
-    const [query, setQuery] = useState('');
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const query = searchParams.get('query') || '';
 
     const API_KEY = "dfbdaa10e6641e35135522619deadcb1";
 
@@ -21,20 +23,27 @@ export default function MoviesPage() {
             .then(response => setMovies(response.data.results))
             .catch(() => setError('Failed to fetch movies'))
             .finally(() => setLoading(false));
-    };    
+    };
+
+    useEffect(() => {
+        if (query) {
+            fetchMovies(query);
+        }
+    }, [query]);
 
     const handleInputChange = (event) => {
-        setQuery(event.target.value);
+        setSearchParams({ query: event.target.value });
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (query.trim() === '') return;
         fetchMovies(query);
     };
 
     return (
         <div>
-            <h1>Search Movise</h1>
+            <h1>Search Movies</h1>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
@@ -46,7 +55,8 @@ export default function MoviesPage() {
             </form>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            {movies && <MovieList movies={movies} />}
+            {movies.length > 0 && <MovieList movies={movies} />}
+            {!loading && !error && movies.length === 0 && query && <p>No movies found.</p>}
         </div>
-    )
+    );
 }

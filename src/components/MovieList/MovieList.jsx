@@ -1,14 +1,19 @@
 // import css from './MovieList.module.css';
 
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-export default function MovieList({movies}) {
+export default function MovieList({ movies }) {
+    const location = useLocation();
+
     return (
         <ul>
             {movies.map(movie => (
                 <li key={movie.id}>
-                    <Link to={`/movies/${movie.id}`}>
+                    <Link 
+                        to={`/movies/${movie.id}`} 
+                        state={{ from: location }}
+                    >
                         <img 
                             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                             alt={movie.title}
@@ -19,7 +24,7 @@ export default function MovieList({movies}) {
             ))}
         </ul>
     );
-};
+}
 
 MovieList.propTypes = {
     movies: PropTypes.arrayOf(

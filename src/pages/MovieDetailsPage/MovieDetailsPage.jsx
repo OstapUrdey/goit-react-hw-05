@@ -1,16 +1,18 @@
 // import css from './MovieDetailsPage.module.css';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, Outlet, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams, Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 export default function MovieDetailsPage() {
-
-    const {movieId} = useParams();
+    const { movieId } = useParams();
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    const locationRef = useRef(location.state?.from || '/movies'); 
 
     const API_KEY = "dfbdaa10e6641e35135522619deadcb1";
     const URL = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`;
@@ -28,11 +30,11 @@ export default function MovieDetailsPage() {
     }, [fetchMovieDetails]);
 
     const handleGoBack = () => {
-        navigate(-1);
+        navigate(locationRef.current);
     };
 
-    if (loading) return <p>Loading...</p>
-    if (error) return <p>{error}</p>
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div>
@@ -69,5 +71,5 @@ export default function MovieDetailsPage() {
                 </>
             )}
         </div>
-    )
+    );
 }
